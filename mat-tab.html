@@ -1,0 +1,409 @@
+<!--
+@license
+Copyright (c) 2015 The expand.js authors. All rights reserved.
+This code may only be used under the BSD style license found at https://expandjs.github.io/LICENSE.txt
+The complete set of authors may be found at https://expandjs.github.io/AUTHORS.txt
+The complete set of contributors may be found at https://expandjs.github.io/CONTRIBUTORS.txt
+-->
+
+<!--
+This component is used to display a material tab.
+It must be used in conjunction with mat-tabs.
+
+@component mat-tab
+@description This component is used to display a material tab.
+
+@dependency polymer Polymer/polymer#^0.5
+@dependency expandjs ExpandJS/expandjs
+@dependency mat-icon-button ExpandJS/mat-icon-button
+@dependency mat-ink ExpandJS/mat-ink
+@dependency mat-ripple ExpandJS/mat-ripple
+@dependency xp-disabled-state ExpandJS/xp-disabled-state
+@dependency xp-focused-state ExpandJS/xp-focused-state
+@dependency xp-observer ExpandJS/xp-observer
+@dependency xp-pressed-state ExpandJS/xp-pressed-state
+@dependency xp-slave-state ExpandJS/xp-slave-state
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../expandjs/expandjs.html">
+<link rel="import" href="../mat-icon-button/mat-icon-button.html">
+<link rel="import" href="../mat-ink/mat-ink.html">
+<link rel="import" href="../mat-ripple/mat-ripple.html">
+<link rel="import" href="../xp-disabled-state/xp-disabled-state.html">
+<link rel="import" href="../xp-focused-state/xp-focused-state.html">
+<link rel="import" href="../xp-observer/xp-observer.html">
+<link rel="import" href="../xp-pressed-state/xp-pressed-state.html">
+<link rel="import" href="../xp-slave-state/xp-slave-state.html">
+
+<polymer-element name="mat-tab" constructor="MATTabElement" attributes="active changed closable closerActiveIcon closerActiveIconSrc closerDisabled closerIcon closerIconSrc closerMenu content data disabled empty focused icon iconSrc label memento name page pressed">
+
+    <template>
+        <link rel="stylesheet" href="../xp-pressed-state/xp-pressed-state.css">
+        <style>
+            :host {
+                display: block;
+                height: 48px;
+                opacity: 0.6;
+                position: relative;
+                text-align: center;
+
+                /* BUTTON */
+                font-size: 14px;
+                font-weight: 500;
+                letter-spacing: 0.01em;
+                line-height: 20px;
+                text-overflow: ellipsis;
+                text-transform: uppercase;
+                white-space: nowrap;
+            }
+
+            :host([active]) {
+                opacity: 1;
+            }
+
+            :host #matTabWrapper {
+                height: 100%;
+            }
+
+            :host #matTabMain {
+                padding: 14px 24px;
+                position: relative;
+            }
+
+            :host-context([mobile]:not([device="tablet"])) #matTabMain {
+                padding: 14px 12px;
+            }
+
+            :host #matTabCloser {
+                position: absolute;
+                right: 0;
+                top: 0;
+            }
+
+            :host #matTabCloser::shadow #matIconButtonIcon,
+            :host #matTabCloser::shadow #matIconButtonActiveIcon {
+                height: 18px;
+                width: 18px;
+            }
+
+            :host #matTabCloser ~ #matTabLabel {
+                margin-right: 24px;
+            }
+
+            :host #matTabIcon {
+                margin-top: -10px;
+            }
+
+            :host #matTabLabel {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+        </style>
+        <template context="{{}}" is="xp-slave-state" master="{{selector}}" masterTag="mat-tabs"></template>
+        <template context="{{}}" is="xp-disabled-state" id="xpDisabledState" disabled="{{disabled}}"></template>
+        <template context="{{}}" is="xp-focused-state" id="xpFocusedState" disabled="{{disabled}}" focused="{{focused}}"></template>
+        <template context="{{}}" is="xp-pressed-state" id="xpPressedState" disabled="{{disabled}}" pressed="{{pressed}}"></template>
+        <div id="matTabWrapper">
+            <div id="matTabMain">
+                <template if="{{closable && label}}"><mat-icon-button id="matTabCloser" active="{{changed}}" activeIcon="{{closerActiveIcon}}" activeIconSrc="{{closerActiveIconSrc}}" disabled?="{{closerDisabled}}" icon="{{closerIcon || 'navigation:close'}}" iconSrc="{{closerIconSrc}}" target="{{closerMenu}}" toggleable="{{true}}" on-xp-activate="{{handleCloser}}" on-click="{{handleStop}}" on-down="{{handleStop}}" on-up="{{handleStop}}"></mat-icon-button></template>
+                <template if="{{(icon || iconSrc) && !label}}"><mat-icon-button id="matTabIcon" icon="{{icon}}" iconSrc="{{iconSrc}}" style="pointer-events: none"></mat-icon-button></template>
+                <div id="matTabLabel" hidden?="{{!label}}">{{label}}</div>
+            </div>
+            <mat-ripple context="{{}}" id="matTabRipple" style="pointer-events: none"></mat-ripple>
+        </div>
+    </template>
+
+    <script>
+        XPComponent({
+
+            /**
+             * Fired when tab's data changes.
+             *
+             * @event mat-tab-change
+             * @param {Element} firer
+             * @param {Object} data
+             * @param {Object} memento
+             * @param {boolean} isChanged
+             * @bubbles
+             */
+
+            /**
+             * Fired when tab is about to close.
+             *
+             * @event mat-tab-close
+             * @param {Element} firer
+             * @param {boolean} isActive
+             * @param {boolean} isChanged
+             * @bubbles
+             */
+
+            /*********************************************************************/
+
+            /**
+             * Compares the tab's data and memento.
+             *
+             * @method compare
+             * @returns {Element}
+             * @private
+             */
+            compare: function () {
+                var self = this;
+                self.changed = !!self.dataObserver && !!self.mementoObserver && !XP.isEquivalent(self.data, self.memento);
+                return self;
+            },
+
+            /*********************************************************************/
+
+            // COMPUTED
+            computed: {
+                'empty': '!icon && !iconSrc && !label'
+            },
+
+            // PUBLISH
+            publish: {
+
+                /**
+                 * If set to true, the element is active.
+                 *
+                 * @attribute active
+                 * @type boolean
+                 * @default false
+                 */
+                active: {reflect: true, value: false},
+
+                /**
+                 * If set to true, the tab's data and memento are not equivalent.
+                 *
+                 * @attribute changed
+                 * @type boolean
+                 * @default false
+                 */
+                changed: {reflect: true, value: false},
+
+                /**
+                 * If set to true, the tab can be closed.
+                 *
+                 * @attribute closable
+                 * @type boolean
+                 * @default false
+                 * @readonly
+                 */
+                closable: {reflect: true, value: false},
+
+                /**
+                 * The tab's closer's active icon, used when changed is true.
+                 *
+                 * @attribute closerActiveIcon
+                 * @type string
+                 * @default ""
+                 */
+                closerActiveIcon: {reflect: true, value: ''},
+
+                /**
+                 * The tab's closer's active icon's src, used when changed is true.
+                 *
+                 * @attribute closerActiveIconSrc
+                 * @type string
+                 * @default ""
+                 */
+                closerActiveIconSrc: {reflect: true, value: ''},
+
+                /**
+                 * If set to true, the tab's closer is disabled.
+                 *
+                 * @attribute closerDisabled
+                 * @type boolean
+                 * @default false
+                 */
+                closerDisabled: {reflect: true, value: false},
+
+                /**
+                 * The tab's closer's icon
+                 *
+                 * @attribute closerIcon
+                 * @type string
+                 * @default ""
+                 */
+                closerIcon: {reflect: true, value: ''},
+
+                /**
+                 * The tab's closer's icon's src
+                 *
+                 * @attribute closerIconSrc
+                 * @type string
+                 * @default ""
+                 */
+                closerIconSrc: {reflect: true, value: ''},
+
+                /**
+                 * The menu to toggle on closer press.
+                 *
+                 * @attribute closerMenu
+                 * @type Element | string
+                 */
+                closerMenu: {reflect: false, value: null},
+
+                /**
+                 * The name of the page's element to be injected.
+                 *
+                 * @attribute content
+                 * @type string
+                 * @default ""
+                 */
+                content: {reflect: true, value: ''},
+
+                /**
+                 * The element's data
+                 *
+                 * @attribute data
+                 * @type *
+                 */
+                data: {reflect: false, value: null},
+
+                /**
+                 * If set to true, the element is disabled.
+                 *
+                 * @attribute disabled
+                 * @type boolean
+                 * @default false
+                 */
+                disabled: {reflect: true, value: false},
+
+                /**
+                 * If set to true, the tab is hidden.
+                 *
+                 * @attribute empty
+                 * @type boolean
+                 * @default false
+                 * @readonly
+                 */
+                empty: {reflect: true, value: false},
+
+                /**
+                 * If set to true, the element is focused.
+                 *
+                 * @attribute focused
+                 * @type boolean
+                 * @default false
+                 */
+                focused: {reflect: true, value: false},
+
+                /**
+                 * The tab's icon.
+                 *
+                 * @attribute icon
+                 * @type string
+                 * @default ""
+                 */
+                icon: {reflect: true, value: ''},
+
+                /**
+                 * The tab's icon's src.
+                 *
+                 * @attribute iconSrc
+                 * @type string
+                 * @default ""
+                 */
+                iconSrc: {reflect: true, value: ''},
+
+                /**
+                 * The tab's label.
+                 *
+                 * @attribute label
+                 * @type string
+                 * @default ""
+                 */
+                label: {reflect: true, value: ''},
+
+                /**
+                 * The tab's memento, used to know when tab's data changes.
+                 *
+                 * @attribute memento
+                 * @type *
+                 */
+                memento: {reflect: false, value: null},
+
+                /**
+                 * The tab's name.
+                 *
+                 * @attribute name
+                 * @type string
+                 * @default ""
+                 */
+                name: {reflect: true, value: ''},
+
+                /**
+                 * The page associated with the tab.
+                 *
+                 * @attribute page
+                 * @type Element
+                 * @readonly
+                 */
+                page: {reflect: false, value: null},
+
+                /**
+                 * If set to true, the element is pressed.
+                 *
+                 * @attribute pressed
+                 * @type boolean
+                 * @default false
+                 * @readonly
+                 */
+                pressed: {reflect: true, value: false}
+            },
+
+            /*********************************************************************/
+
+            // OBSERVER
+            changedChanged: function (pre, post) {
+                this.fire('mat-tab-change', {firer: this, data: this.data, memento: this.memento, isChanged: post});
+            },
+
+            // OBSERVER
+            contentChanged: function (pre, post) {
+                if (this.page) { this.page.content = post; }
+            },
+
+            // OBSERVER
+            dataChanged: function (pre, post) {
+                var self = this;
+                if (arguments.length < 2) { return; }
+                if (self.page) { self.page.data = post; }
+                self.dataObserver = XP.isObject(post) ? new XPObserver(post, self.compare.bind(self), true) : null;
+                self.compare();
+            },
+
+            // OBSERVER
+            dataObserverChanged: function (pre, post) {
+                if (arguments.length > 1 && pre) { pre.disconnect(); }
+            },
+
+            // OBSERVER
+            mementoChanged: function (pre, post) {
+                var self = this;
+                if (arguments.length < 2) { return; }
+                self.mementoObserver = XP.isObject(post) ? new XPObserver(post, self.compare.bind(self), true) : null;
+                self.compare();
+            },
+
+            // OBSERVER
+            mementoObserverChanged: function (pre, post) {
+                if (arguments.length > 1 && pre) { pre.disconnect(); }
+            },
+
+            /*********************************************************************/
+
+            // HANDLER
+            handleCloser: function (event) {
+                if (!event.target.findTarget()) { this.fire('mat-tab-close', {firer: this, isActive: this.active, isChanged: this.changed}); }
+            },
+
+            // HANDLER
+            handleStop: function (event) {
+                event.stopPropagation();
+            }
+        });
+    </script>
+
+</polymer-element>
