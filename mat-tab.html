@@ -108,7 +108,7 @@ It must be used in conjunction with mat-tabs.
         <template context="{{}}" is="xp-pressed-state" id="xpPressedState" disabled="{{disabled}}" pressed="{{pressed}}"></template>
         <div id="matTabWrapper">
             <div id="matTabMain">
-                <template if="{{closable && label}}"><mat-icon-button id="matTabCloser" active="{{changed}}" activeIcon="{{closerActiveIcon}}" activeIconSrc="{{closerActiveIconSrc}}" disabled?="{{closerDisabled}}" icon="{{closerIcon || 'navigation:close'}}" iconSrc="{{closerIconSrc}}" target="{{closerMenu}}" toggleable="{{true}}" on-xp-activate="{{handleCloser}}" on-click="{{handleStop}}" on-down="{{handleStop}}" on-up="{{handleStop}}"></mat-icon-button></template>
+                <template if="{{closable && label}}"><mat-icon-button id="matTabCloser" active="{{changed}}" activeIcon="{{closerActiveIcon}}" activeIconSrc="{{closerActiveIconSrc}}" disabled?="{{closerDisabled}}" icon="{{closerIcon || 'navigation:close'}}" iconSrc="{{closerIconSrc}}" target="{{closerMenu}}" toggleable="{{true}}" on-xp-activate="{{handleCloser}}" on-down="{{handleStop}}" on-tap="{{handleStop}}" on-up="{{handleStop}}"></mat-icon-button></template>
                 <template if="{{(icon || iconSrc) && !label}}"><mat-icon-button id="matTabIcon" icon="{{icon}}" iconSrc="{{iconSrc}}" style="pointer-events: none"></mat-icon-button></template>
                 <div id="matTabLabel" hidden?="{{!label}}">{{label}}</div>
             </div>
