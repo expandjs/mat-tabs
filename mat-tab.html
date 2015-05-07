@@ -430,7 +430,9 @@ It must be used in conjunction with mat-tabs.
 
             // HANDLER
             handleCloser: function (event) {
-                if (!event.target.findTarget()) { this.fire('mat-tab-close', {firer: this, isActive: this.active, isChanged: this.changed}); }
+                var self = this, toggle = event.detail.target && event.detail.target.toggle;
+                if (toggle) { event.detail.target.toggle(event.target, self.data); } else { self.fire('mat-tab-close', {firer: self, isActive: self.active, isChanged: self.changed}); }
+                event.stopPropagation();
             },
 
             // HANDLER
