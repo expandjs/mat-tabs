@@ -400,7 +400,7 @@ It can be used in conjunction with mat-pages.
                     container = tab ? XP.getBoundings(self.$.matTabsContainer) : null;
 
                 // Animating
-                XP.requestAnimationFrame(function () {
+                XP.delay(function () {
                     XP.setStyle(bar, 'transform', 'translateX(' + (tab ? boundings.left - container.left : 0) + 'px)');
                     XP.setStyle(bar, 'width', (tab ? boundings.width * 100 / container.width : 0) + '%');
                 });
