@@ -236,6 +236,17 @@ It can be used in conjunction with mat-pages.
             },
 
             /**
+             * Returns a tab's index.
+             *
+             * @method indexOf
+             * @param {Element} tab
+             * @returns {number | string | undefined}
+             */
+            indexOf: function (tab) {
+                return XP.includes(this.tabs, tab) ? this.$.xpSelectedState.findIndex(tab) : undefined;
+            },
+
+            /**
              * Checks if a tab is selectable.
              *
              * @method isSelectable
@@ -262,9 +273,10 @@ It can be used in conjunction with mat-pages.
              *
              * @method open
              * @param {Object} [properties]
+             * @param {boolean} [autoSelect = false]
              * @returns {Element | undefined}
              */
-            open: function (properties) {
+            open: function (properties, autoSelect) {
 
                 // Vars
                 var self   = this,
@@ -272,7 +284,10 @@ It can be used in conjunction with mat-pages.
                     target = self.findTarget();
 
                 // Propagating
-                tab.page = (target && target.open && target.open(name, {content: tab.content, data: tab.data})) || null;
+                if (target && target.open) { tab.page = target.open({content: tab.content, data: tab.data}); }
+
+                // Selecting
+                if (autoSelect) { XP.delay(function () { XP.delay(function () { self.select(self.indexOf(tab)); }); }); }
 
                 return tab;
             },
@@ -567,8 +582,9 @@ It can be used in conjunction with mat-pages.
 
             // HANDLER
             handleClose: function (event, detail) {
+                var self = this;
+                self.close(self.indexOf(detail.firer));
                 event.stopPropagation();
-                this.close(detail.firer);
             },
 
             // HANDLER
