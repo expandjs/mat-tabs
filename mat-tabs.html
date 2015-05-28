@@ -111,9 +111,12 @@ It can be used in conjunction with mat-pages.
                 bottom: 0;
                 left: 0;
                 position: absolute;
-                transform-origin: 0 0;
+                -webkit-transform: scale3d(1, 1, 1) translateX(0px);
                 transform: scale3d(1, 1, 1) translateX(0px);
-                transition: transform .5s cubic-bezier(.55, 0, .01, 1), width 0.5s cubic-bezier(.55, 0, .01, 1);
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
+                transition: transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
                 will-change: transform, width;
             }
         </style>
@@ -421,6 +424,7 @@ It can be used in conjunction with mat-pages.
 
                 // Animating
                 XP.delay(function () {
+                    XP.setStyle(bar, '-webkit-transform', 'translateX(' + (tab ? boundings.left - container.left : 0) + 'px)');
                     XP.setStyle(bar, 'transform', 'translateX(' + (tab ? boundings.left - container.left : 0) + 'px)');
                     XP.setStyle(bar, 'width', (tab ? boundings.width * 100 / container.width : 0) + '%');
                 });
