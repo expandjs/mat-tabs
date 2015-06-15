@@ -25,22 +25,22 @@
     "**/.*"
   ],
   "dependencies": {
-    "expandjs": "ExpandJS/expandjs",
-    "mat-icon-button": "ExpandJS/mat-icon-button",
-    "mat-ink": "ExpandJS/mat-ink",
-    "mat-ripple": "ExpandJS/mat-ripple",
-    "xp-device": "ExpandJS/xp-device",
-    "xp-disabled-state": "ExpandJS/xp-disabled-state",
-    "xp-focused-state": "ExpandJS/xp-focused-state",
-    "xp-master-state": "ExpandJS/xp-master-state",
-    "xp-observer": "ExpandJS/xp-observer",
-    "xp-pressed-state": "ExpandJS/xp-pressed-state",
-    "xp-selected-state": "ExpandJS/xp-selected-state",
-    "xp-slave-state": "ExpandJS/xp-slave-state",
-    "xp-targeter": "ExpandJS/xp-targeter",
+    "expandjs": "ExpandJS/expandjs#alpha",
+    "mat-icon-button": "ExpandJS/mat-icon-button#alpha",
+    "mat-ink": "ExpandJS/mat-ink#alpha",
+    "mat-ripple": "ExpandJS/mat-ripple#alpha",
+    "xp-device": "ExpandJS/xp-device#alpha",
+    "xp-disabled-state": "ExpandJS/xp-disabled-state#alpha",
+    "xp-focused-state": "ExpandJS/xp-focused-state#alpha",
+    "xp-master-state": "ExpandJS/xp-master-state#alpha",
+    "xp-observer": "ExpandJS/xp-observer#alpha",
+    "xp-pressed-state": "ExpandJS/xp-pressed-state#alpha",
+    "xp-selected-state": "ExpandJS/xp-selected-state#alpha",
+    "xp-slave-state": "ExpandJS/xp-slave-state#alpha",
+    "xp-targeter": "ExpandJS/xp-targeter#alpha",
     "polymer": "Polymer/polymer#^0.5"
   },
   "devDependencies": {
-    "mat-demo": "ExpandJS/mat-demo"
+    "mat-demo": "ExpandJS/mat-demo#alpha"
   }
 }
