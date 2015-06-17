@@ -1,0 +1,521 @@
+<!--
+@license
+Copyright (c) 2015 The ExpandJS authors. All rights reserved.
+This code may only be used under the BSD style license found at https://expandjs.github.io/LICENSE.txt
+The complete set of authors may be found at https://expandjs.github.io/AUTHORS.txt
+The complete set of contributors may be found at https://expandjs.github.io/CONTRIBUTORS.txt
+-->
+
+<!--
+This element is used to display material tabs.
+It must be used in conjunction with mat-tab.
+It can be used in conjunction with mat-pages.
+
+@element mat-tabs
+@description A custom element used to display Material Design tabs
+@keywords material design, material tabs, web app, html5, expandjs, web-components
+@group navigation
+@homepage http://expandjs.com/elements/mat-tabs
+@demo http://expandjs.com/demo/mat-tabs
+
+@behavior xp-selected-behavior http://expandjs.com/elements/xp-selected-behavior
+
+@dependency polymer Polymer/polymer
+@dependency expandjs ExpandJS/expandjs
+@dependency iron-flex-layout PolymerElements/iron-flex-layout
+@dependency mat-icon-button ExpandJS/mat-icon-button
+@dependency mat-icons ExpandJS/mat-icons
+@dependency xp-master-state ExpandJS/xp-master-state
+@dependency xp-selected-behavior ExpandJS/xp-selected-behavior
+
+@devDependency mat-demo ExpandJS/mat-demo
+-->
+
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../expandjs/expandjs.html">
+<link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
+<link rel="import" href="../mat-icon-button/mat-icon-button.html">
+<link rel="import" href="../mat-icons/navigation-icons.html">
+<link rel="import" href="../xp-master-state/xp-master-state.html">
+<link rel="import" href="../xp-selected-behavior/xp-selected-behavior.html">
+<link rel="import" href="mat-tab.html">
+
+<dom-module id="mat-tabs">
+
+    <style>
+        :host {
+            display: block;
+            overflow: hidden;
+            position: relative;
+            height: 48px;
+            white-space: nowrap;
+        }
+
+        :host #matTabsWrapper {
+            @apply(--layout-horizontal);
+            height: 100%;
+        }
+
+        :host #matTabsLeft {
+            margin: 4px 0 4px 16px;
+        }
+
+        :host #matTabsRight {
+            margin: 4px 16px 4px 0;
+        }
+
+        :host #matTabsLeft:not([showed]),
+        :host #matTabsRight:not([showed]) {
+            opacity: 0 !important;
+            pointer-events: none !important;
+            visibility: hidden !important;
+        }
+
+        :host(:not([scrollable])) #matTabsLeft,
+        :host(:not([scrollable])) #matTabsRight {
+            display: none !important;
+        }
+
+        :host #matTabsSlider {
+            @apply(--layout-flex);
+            height: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        :host #matTabsContainer {
+            @apply(--layout-horizontal);
+            height: 100%;
+            position: absolute;
+        }
+
+        :host #matTabsBar {
+            border-top: 2px solid currentColor;
+            bottom: 0;
+            left: 0;
+            position: absolute;
+            -webkit-transform: scale3d(1, 1, 1) translateX(0px);
+            transform: scale3d(1, 1, 1) translateX(0px);
+            -webkit-transform-origin: 0 0;
+            transform-origin: 0 0;
+            -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
+            transition: transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
+            will-change: transform, width;
+        }
+
+        :host([emptyItems]) #matTabsBar {
+            display: none !important;
+        }
+
+        /* MOBILE */
+
+        @media (max-width: 959px) {
+
+            :host(:not([scrollable])) ::content mat-tab {
+                @apply(--layout-flex);
+            }
+
+            :host #matTabsLeft,
+            :host #matTabsRight {
+                display: none !important;
+            }
+
+            :host([scrollable]) #matTabsContainer {
+                padding-left: 60px;
+            }
+
+            :host(:not([scrollable])) #matTabsContainer {
+                position: relative;
+            }
+        }
+    </style>
+
+    <template>
+        <xp-master-state id="xpMasterState" slaves="{{tabs}}" slaveTag="mat-tab"></xp-master-state>
+        <div id="matTabsWrapper">
+            <mat-icon-button id="matTabsLeft" showed$="[[moreLeft]]" icon="navigation:chevron-left" on-xp-activate="_handleLeft"></mat-icon-button>
+            <div id="matTabsSlider" touch-action="pan-y" on-track="_handleTrack">
+                <div id="matTabsContainer" on-click="_handleClick" on-mat-tab-close="_handleClose">
+                    <content id="content"></content>
+                    <mat-ink id="matTabsBar"></mat-ink>
+                </div>
+            </div>
+            <mat-icon-button id="matTabsRight" showed$="[[moreRight]]" icon="navigation:chevron-right" on-xp-activate="_handleRight"></mat-icon-button>
+        </div>
+    </template>
+
+    <script>
+        Polymer({
+
+            // ELEMENT
+            is: 'mat-tabs',
+
+            // BEHAVIORS
+            behaviors: [
+                Polymer.XPSelectedBehavior
+            ],
+
+            /*********************************************************************/
+
+            /**
+             * Fired when a tab is closed.
+             *
+             * @event mat-tabs-close
+             * @param {Element} firer
+             * @param {Element} tab
+             * @param {number} index
+             * @param {boolean} isActive
+             * @param {boolean} isChanged
+             * @bubbles
+             * @cancelable
+             */
+
+            /*********************************************************************/
+
+            /**
+             * Closes a tab.
+             *
+             * @method close
+             * @param {number | string} index
+             * @returns {Element}
+             */
+            close: function (index) {
+
+                // Vars
+                var self       = this,
+                    item       = self.findItem(index),
+                    target     = self.findTarget(),
+                    isSelected = self.isSelected(index);
+
+                // Checking
+                if (!item || !item.closable) { return null; }
+
+                // Firing
+                if (self.fire('mat-tabs-close', {firer: self, tab: item, index: index, isActive: item.active, isChanged: item.changed}, {cancelable: true}).defaultPrevented) { return null; }
+
+                // Selecting
+                if (isSelected && self.items.length > 1) { self[XP.isLast(item, self.items) ? 'selectPrevious' : 'selectNext'](); }
+
+                // Closing
+                self.$.xpMasterState.removeSlave(item);
+
+                // Propagating
+                if (target && target.close) { target.close(index); }
+
+                return item;
+            },
+
+            /**
+             * Opens a tab.
+             *
+             * @method open
+             * @param {Object} [properties]
+             * @param {boolean} [autoSelect = false]
+             * @returns {Element}
+             */
+            open: function (properties, autoSelect) {
+
+                // Vars
+                var self   = this,
+                    item   = self.$.xpMasterState.appendSlave(XP.assign({}, properties, {closable: true})),
+                    target = self.findTarget();
+
+                // Propagating
+                if (target && target.open) { item.page = target.open({content: item.content, data: item.data}); }
+
+                // Selecting
+                if (autoSelect) { self.select(self.findIndex(item, true)); }
+
+                return item;
+            },
+
+            /**
+             * Slides to the left.
+             *
+             * @method slideLeft
+             * @returns {Element}
+             */
+            slideLeft: function () {
+                var self = this, item = XP.findLast(self.items, self.bleedsLeft.bind(self));
+                if (item) { self.slideTo(item); }
+                return self;
+            },
+
+            /**
+             * Slides to the right.
+             *
+             * @method slideRight
+             * @returns {Element}
+             */
+            slideRight: function () {
+                var self = this, item = XP.find(self.items, self.bleedsRight.bind(self));
+                if (item) { self.slideTo(item); }
+                return self;
+            },
+
+            /**
+             * Slides to a tab.
+             *
+             * @method slideTo
+             * @param {number} index
+             * @returns {Element}
+             */
+            slideTo: function (index) {
+                var self = this, slider = self.$.matTabsSlider, item = self.findItem(index, XP.includes(self.items, index));
+                if (item) { slider.scrollLeft = item.offsetLeft - (slider.clientWidth / 2) + (item.clientWidth / 2); }
+                if (item) { self._updateMore(); }
+                return item;
+            },
+
+            /*********************************************************************/
+
+            /**
+             * Checks if a tab is bleeding out the container's left side.
+             *
+             * @method _bleedsLeft
+             * @param {Element} item
+             * @returns {boolean}
+             * @private
+             */
+            _bleedsLeft: function (item) {
+                var self = this, slider = self.$.matTabsSlider;
+                return item.offsetLeft < slider.scrollLeft;
+            },
+
+            /**
+             * Checks if a tab is bleeding out the container's right side.
+             *
+             * @method _bleedsRight
+             * @param {Element} item
+             * @returns {boolean}
+             * @private
+             */
+            _bleedsRight: function (item) {
+                var self = this, slider = self.$.matTabsSlider;
+                return item.offsetLeft + item.clientWidth > slider.scrollLeft + slider.clientWidth;
+            },
+
+            /**
+             * Updates the selection bar.
+             *
+             * @method _updateBar
+             * @returns {Element}
+             * @private
+             */
+            _updateBar: function () {
+
+                // Vars
+                var self      = this,
+                    bar       = self.$.matTabsBar,
+                    item      = self.selection,
+                    boundings = item ? XP.getBoundings(item) : null,
+                    container = item ? XP.getBoundings(self.$.matTabsContainer) : null;
+
+                // Animating
+                XP.delay(function () {
+                    XP.setStyle(bar, '-webkit-transform', 'translateX(' + (item ? boundings.left - container.left : 0) + 'px)');
+                    XP.setStyle(bar, 'transform', 'translateX(' + (item ? boundings.left - container.left : 0) + 'px)');
+                    XP.setStyle(bar, 'width', (item ? boundings.width * 100 / container.width : 0) + '%');
+                });
+
+                return self;
+            },
+
+            /**
+             * Updates the slide buttons.
+             *
+             * @method _updateMore
+             * @returns {Element}
+             * @private
+             */
+            _updateMore: function () {
+
+                // Vars
+                var self   = this,
+                    slider = self.$.matTabsSlider;
+
+                // Setting
+                self._setScrolled(slider.scrollLeft);
+                self._setMoreLeft(self.scrolled > 0);
+                self._setMoreRight(self.scrolled + slider.clientWidth < slider.scrollWidth);
+
+                return self;
+            },
+
+            /*********************************************************************/
+
+            // ATTRIBUTES
+            hostAttributes: {
+                'default-selected': 0,
+                'extended': true,
+                'item-selector': 'mat-tab'
+            },
+
+            // LISTENERS
+            listeners: {
+                'items-changed': '_handleItems',
+                'selection-changed': '_handleSelection'
+            },
+
+            // PROPERTIES
+            properties: {
+
+                /**
+                 * If set to true, the tabs can be slided on the left.
+                 *
+                 * @attribute more-left
+                 * @type boolean
+                 * @default false
+                 * @notifies
+                 * @readonly
+                 */
+                moreLeft: {
+                    notify: true,
+                    readOnly: true,
+                    reflectToAttribute: true,
+                    type: Boolean,
+                    value: false
+                },
+
+                /**
+                 * If set to true, the tabs can be slided on the right.
+                 *
+                 * @attribute more-right
+                 * @type boolean
+                 * @default false
+                 * @notifies
+                 * @readonly
+                 */
+                moreRight: {
+                    notify: true,
+                    readOnly: true,
+                    reflectToAttribute: true,
+                    type: Boolean,
+                    value: false
+                },
+
+                /**
+                 * If set to true, the tabs container is scrollable.
+                 *
+                 * @attribute scrollable
+                 * @type boolean
+                 * @default false
+                 */
+                scrollable: {
+                    reflectToAttribute: true,
+                    type: Boolean,
+                    value: false
+                },
+
+                /**
+                 * The tabs scroll amount.
+                 *
+                 * @attribute scrolled
+                 * @type number
+                 * @default 0
+                 * @notifies
+                 * @readonly
+                 */
+                scrolled: {
+                    notify: true,
+                    observer: '_scrolledChanged',
+                    readOnly: true,
+                    type: Number,
+                    value: 0
+                }
+            },
+
+            /*********************************************************************/
+
+            // OBSERVER
+            _scrolledChanged: function () {
+                this._updateMore();
+            },
+
+            /*********************************************************************/
+
+            // LISTENER
+            attached: function () {
+                this.mutated();
+            },
+
+            // LISTENER
+            mutated: function () {
+
+                // Vars
+                var self = this;
+
+                // Updating
+                self._updateBar();
+                self._updateMore();
+
+                // Observing
+                XP.onMutation(self, self.mutated.bind(self), {attributes: true, childList: true, subtree: true});
+            },
+
+            /*********************************************************************/
+
+            // HANDLER
+            _handleClose: function (event, detail) {
+
+                // Vars
+                var self;
+
+                // Closing
+                self.close(self.findIndex(detail.firer));
+
+                // Stopping
+                event.stopPropagation();
+            },
+
+            // HANDLER
+            _handleClick: function (event) {
+
+                // Checking
+                if (event.button) { return; }
+
+                // Vars
+                var self   = this,
+                    target = event.target,
+                    item   = self.findItem(target) || self.findItem(XP.findParentElement(Polymer.dom(target), self.itemSelector, self));
+
+                // Switching
+                if (item && self[self.isSelected(item, true) ? 'isUnselectable' : 'isSelectable'](item, true)) { self.switch(item, false, true); }
+            },
+
+            // HANDLER
+            _handleItems: function () {
+                if (this.selection) { this.slideTo(this.selection); }
+            },
+
+            // HANDLER
+            _handleLeft: function () {
+                this.slideLeft();
+            },
+
+            // HANDLER
+            _handleRight: function () {
+                this.slideRight();
+            },
+
+            // HANDLER
+            _handleSelection: function () {
+                if (this.selection) { this.slideTo(this.selection); }
+            },
+
+            // HANDLER
+            _handleTrack: function (event) {
+
+                // Vars
+                var self = this;
+
+                // Scrolling
+                self.$.matTabsSlider.scrollLeft -= event.ddx;
+
+                // Updating
+                self._updateMore();
+            }
+        });
+    </script>
+
+</dom-module>

@@ -1,0 +1,47 @@
+{
+  "name": "mat-tabs",
+  "license": "BSD-3-Clause",
+  "version": "0.9.0",
+  "description": "A custom element used to display Material Design tabs",
+  "homepage": "http://expandjs.com/elements/mat-tabs",
+  "authors": [
+    "Giuliano Rullo <g.rullo@expandjs.com>",
+    "Maurizio Stefàno <m.stefano@expandjs.com>",
+    "Robert Manolea <r.manolea@expandjs.com>"
+  ],
+  "keywords": [
+    "material design",
+    "material tabs",
+    "web app",
+    "html5",
+    "expandjs",
+    "web-components"
+  ],
+  "main": [
+    "mat-tab.html",
+    "mat-tabs.html"
+  ],
+  "ignore": [
+    "**/.*"
+  ],
+  "dependencies": {
+    "expandjs": "ExpandJS/expandjs",
+    "mat-icon": "ExpandJS/mat-icon",
+    "mat-icon-button": "ExpandJS/mat-icon-button",
+    "mat-icons": "ExpandJS/mat-icons",
+    "mat-ink": "ExpandJS/mat-ink",
+    "mat-menu-button": "ExpandJS/mat-menu-button",
+    "mat-ripple": "ExpandJS/mat-ripple",
+    "xp-master-state": "ExpandJS/xp-master-state",
+    "xp-observer": "ExpandJS/xp-observer",
+    "xp-pressed-behavior": "ExpandJS/xp-pressed-behavior",
+    "xp-referral-behavior": "ExpandJS/xp-referral-behavior",
+    "xp-selected-behavior": "ExpandJS/xp-selected-behavior",
+    "xp-slave-state": "ExpandJS/xp-slave-state",
+    "polymer": "Polymer/polymer",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout"
+  },
+  "devDependencies": {
+    "mat-demo": "ExpandJS/mat-demo"
+  }
+}

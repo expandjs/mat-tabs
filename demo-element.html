@@ -1,0 +1,61 @@
+<link rel="import" href="../mat-demo/mat-demo.html">
+<link rel="import" href="../mat-icons/action-icons.html">
+<link rel="import" href="../mat-icons/av-icons.html">
+<link rel="import" href="mat-tabs.html">
+
+<dom-module id="mat-tabs-demo">
+
+    <template>
+        <mat-demo label="mat-tabs">
+
+            <div class="demo-title">Default</div>
+            <mat-tabs>
+                <mat-tab name="1" label="First tab"></mat-tab>
+                <mat-tab name="2" label="Second tab"></mat-tab>
+                <mat-tab name="3" label="Third tab"></mat-tab>
+            </mat-tabs>
+
+            <div class="demo-title">Closable</div>
+            <mat-tabs>
+                <mat-tab name="1" label="First tab" closable></mat-tab>
+                <mat-tab name="2" label="Second tab" closable></mat-tab>
+                <mat-tab name="3" label="Third tab" closable></mat-tab>
+            </mat-tabs>
+
+            <div class="demo-title">Icons</div>
+            <mat-tabs>
+                <mat-tab name="1" icon="av:new-releases"></mat-tab>
+                <mat-tab name="2" icon="av:album"></mat-tab>
+                <mat-tab name="3" icon="av:movie"></mat-tab>
+                <mat-tab name="4" icon="action:favorite"></mat-tab>
+            </mat-tabs>
+
+            <div class="demo-title">Scrollable</div>
+            <mat-tabs scrollable>
+                <mat-tab name="1" label="First tab"></mat-tab>
+                <mat-tab name="2" label="Second tab"></mat-tab>
+                <mat-tab name="3" label="Third tab"></mat-tab>
+                <mat-tab name="4" label="Forth tab"></mat-tab>
+                <mat-tab name="5" label="Fifth tab"></mat-tab>
+                <mat-tab name="6" label="Sixth tab"></mat-tab>
+                <mat-tab name="7" label="Seventh tab"></mat-tab>
+                <mat-tab name="8" label="Eighth tab"></mat-tab>
+                <mat-tab name="9" label="Ninth tab"></mat-tab>
+                <mat-tab name="10" label="Tenth tab"></mat-tab>
+                <mat-tab name="11" label="Eleventh tab"></mat-tab>
+                <mat-tab name="12" label="Twelfth tab"></mat-tab>
+                <mat-tab name="13" label="Thirteenth tab"></mat-tab>
+            </mat-tabs>
+
+        </mat-demo>
+    </template>
+
+    <script>
+        Polymer({
+
+            // ELEMENT
+            is: 'mat-tabs-demo'
+        });
+    </script>
+
+</dom-module>
