@@ -1,7 +1,7 @@
 {
   "name": "mat-tabs",
   "license": "BSD-3-Clause",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "A custom element used to display Material Design tabs",
   "homepage": "http://expandjs.com/elements/mat-tabs",
   "authors": [
@@ -25,23 +25,23 @@
     "**/.*"
   ],
   "dependencies": {
-    "expandjs": "ExpandJS/expandjs",
-    "mat-icon": "ExpandJS/mat-icon",
-    "mat-icon-button": "ExpandJS/mat-icon-button",
-    "mat-icons": "ExpandJS/mat-icons",
-    "mat-ink": "ExpandJS/mat-ink",
-    "mat-menu-button": "ExpandJS/mat-menu-button",
-    "mat-ripple": "ExpandJS/mat-ripple",
-    "xp-master-state": "ExpandJS/xp-master-state",
-    "xp-observer": "ExpandJS/xp-observer",
-    "xp-pressed-behavior": "ExpandJS/xp-pressed-behavior",
-    "xp-referral-behavior": "ExpandJS/xp-referral-behavior",
-    "xp-selected-behavior": "ExpandJS/xp-selected-behavior",
-    "xp-slave-state": "ExpandJS/xp-slave-state",
-    "polymer": "Polymer/polymer",
-    "iron-flex-layout": "PolymerElements/iron-flex-layout"
+    "expandjs": "ExpandJS/expandjs#0.9.1",
+    "mat-icon": "ExpandJS/mat-icon#0.9.1",
+    "mat-icon-button": "ExpandJS/mat-icon-button#0.9.1",
+    "mat-icons": "ExpandJS/mat-icons#0.9.1",
+    "mat-ink": "ExpandJS/mat-ink#0.9.1",
+    "mat-menu-button": "ExpandJS/mat-menu-button#0.9.1",
+    "mat-ripple": "ExpandJS/mat-ripple#0.9.1",
+    "xp-master-state": "ExpandJS/xp-master-state#0.9.1",
+    "xp-observer": "ExpandJS/xp-observer#0.9.1",
+    "xp-pressed-behavior": "ExpandJS/xp-pressed-behavior#0.9.1",
+    "xp-referral-behavior": "ExpandJS/xp-referral-behavior#0.9.1",
+    "xp-selected-behavior": "ExpandJS/xp-selected-behavior#0.9.1",
+    "xp-slave-state": "ExpandJS/xp-slave-state#0.9.1",
+    "polymer": "Polymer/polymer#^1.0.4",
+    "iron-flex-layout": "PolymerElements/iron-flex-layout#^1.0.2"
   },
   "devDependencies": {
-    "mat-demo": "ExpandJS/mat-demo"
+    "mat-demo": "ExpandJS/mat-demo#0.9.1"
   }
 }

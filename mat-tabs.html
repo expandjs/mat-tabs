@@ -18,17 +18,17 @@ It can be used in conjunction with mat-pages.
 @homepage http://expandjs.com/elements/mat-tabs
 @demo http://expandjs.com/demo/mat-tabs
 
-@behavior xp-selected-behavior http://expandjs.com/elements/xp-selected-behavior
+@behavior xp-selected-behavior http://expandjs.com/elements/xp-selected-behavior#0.9.1
 
-@dependency polymer Polymer/polymer
-@dependency expandjs ExpandJS/expandjs
-@dependency iron-flex-layout PolymerElements/iron-flex-layout
-@dependency mat-icon-button ExpandJS/mat-icon-button
-@dependency mat-icons ExpandJS/mat-icons
-@dependency xp-master-state ExpandJS/xp-master-state
-@dependency xp-selected-behavior ExpandJS/xp-selected-behavior
+@dependency polymer Polymer/polymer#^1.0.4
+@dependency expandjs ExpandJS/expandjs#0.9.1
+@dependency iron-flex-layout PolymerElements/iron-flex-layout#^1.0.2
+@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.1
+@dependency mat-icons ExpandJS/mat-icons#0.9.1
+@dependency xp-master-state ExpandJS/xp-master-state#0.9.1
+@dependency xp-selected-behavior ExpandJS/xp-selected-behavior#0.9.1
 
-@devDependency mat-demo ExpandJS/mat-demo
+@devDependency mat-demo ExpandJS/mat-demo#0.9.1
 -->
 
 <link rel="import" href="../polymer/polymer.html">
@@ -131,10 +131,10 @@ It can be used in conjunction with mat-pages.
     </style>
 
     <template>
-        <xp-master-state id="xpMasterState" slaves="{{tabs}}" slaveTag="mat-tab"></xp-master-state>
+        <template is="xp-master-state" id="xpMasterState" slaves="{{tabs}}" slave-tag="mat-tab"></template>
         <div id="matTabsWrapper">
             <mat-icon-button id="matTabsLeft" showed$="[[moreLeft]]" icon="navigation:chevron-left" on-xp-activate="_handleLeft"></mat-icon-button>
-            <div id="matTabsSlider" touch-action="pan-y" on-track="_handleTrack">
+            <div id="matTabsSlider" on-track="_handleTrack">
                 <div id="matTabsContainer" on-click="_handleClick" on-mat-tab-close="_handleClose">
                     <content id="content"></content>
                     <mat-ink id="matTabsBar"></mat-ink>
@@ -236,7 +236,7 @@ It can be used in conjunction with mat-pages.
              * @returns {Element}
              */
             slideLeft: function () {
-                var self = this, item = XP.findLast(self.items, self.bleedsLeft.bind(self));
+                var self = this, item = XP.findLast(self.items, self._bleedsLeft.bind(self));
                 if (item) { self.slideTo(item); }
                 return self;
             },
@@ -248,7 +248,7 @@ It can be used in conjunction with mat-pages.
              * @returns {Element}
              */
             slideRight: function () {
-                var self = this, item = XP.find(self.items, self.bleedsRight.bind(self));
+                var self = this, item = XP.find(self.items, self._bleedsRight.bind(self));
                 if (item) { self.slideTo(item); }
                 return self;
             },
@@ -346,9 +346,7 @@ It can be used in conjunction with mat-pages.
 
             // ATTRIBUTES
             hostAttributes: {
-                'default-selected': 0,
-                'extended': true,
-                'item-selector': 'mat-tab'
+                'extended': true
             },
 
             // LISTENERS
@@ -359,6 +357,32 @@ It can be used in conjunction with mat-pages.
 
             // PROPERTIES
             properties: {
+
+                /**
+                 * The index of the item to select by default.
+                 * TODO Temporary webcomponents polyfill's fix for `hostAttributes`.
+                 *
+                 * @attribute default-selected
+                 * @type number | string
+                 * @default 0
+                 */
+                defaultSelected: {
+                    value: 0
+                },
+
+                /**
+                 * The selector used to recognize selectable items.
+                 * TODO Temporary webcomponents polyfill's fix for `hostAttributes`.
+                 *
+                 * @attribute item-selector
+                 * @type string
+                 * @default "mat-tab"
+                 */
+                itemSelector: {
+                    reflectToAttribute: true,
+                    type: String,
+                    value: 'mat-tab'
+                },
 
                 /**
                  * If set to true, the tabs can be slided on the left.
@@ -459,7 +483,7 @@ It can be used in conjunction with mat-pages.
             _handleClose: function (event, detail) {
 
                 // Vars
-                var self;
+                var self = this;
 
                 // Closing
                 self.close(self.findIndex(detail.firer));
@@ -510,7 +534,7 @@ It can be used in conjunction with mat-pages.
                 var self = this;
 
                 // Scrolling
-                self.$.matTabsSlider.scrollLeft -= event.ddx;
+                self.$.matTabsSlider.scrollLeft -= event.detail.ddx;
 
                 // Updating
                 self._updateMore();
