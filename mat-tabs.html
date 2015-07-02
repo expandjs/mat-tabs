@@ -196,13 +196,11 @@ It can be used in conjunction with mat-pages.
                 // Selecting
                 if (isSelected && self.items.length > 1) { self[XP.isLast(item, self.items) ? 'selectPrevious' : 'selectNext'](); }
 
-                // Closing
-                self.$.xpMasterState.removeSlave(item);
-
                 // Propagating
                 if (target && target.close) { target.close(index); }
 
-                return item;
+                // Removing
+                return XP.removeChild(Polymer.dom(Polymer.dom(item).parentNode), item);
             },
 
             /**
@@ -215,16 +213,19 @@ It can be used in conjunction with mat-pages.
              */
             open: function (properties, autoSelect) {
 
+                // Asserting
+                XP.assertArgument(XP.isVoid(properties) || XP.isObject(properties), 1, 'Object');
+
                 // Vars
                 var self   = this,
-                    item   = self.$.xpMasterState.appendSlave(XP.assign({}, properties, {closable: true})),
+                    item   = XP.appendChild(Polymer.dom(self), XP.createElement('mat-tab', {properties: XP.assign({}, properties, {closable: true})})),
                     target = self.findTarget();
 
                 // Propagating
                 if (target && target.open) { item.page = target.open({content: item.content, data: item.data}); }
 
                 // Selecting
-                if (autoSelect) { self.select(self.findIndex(item, true)); }
+                if (autoSelect) { XP.delay(function () { self.select(item, true); }, 2, true); }
 
                 return item;
             },
