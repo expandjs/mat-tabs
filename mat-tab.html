@@ -119,7 +119,7 @@ It must be used in conjunction with mat-tabs.
         <template is="xp-slave-state" master="{{selector}}" master-tag="mat-tabs"></template>
         <div id="matTabWrapper">
             <div id="matTabMain">
-                <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-menu-button id="matTabCloser" active="{{changed}}" active-icon="[[closerActiveIcon]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="{{closerMenu}}" toggleable on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-menu-button></template>
+                <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-menu-button id="matTabCloser" active="{{modified}}" active-icon="[[closerActiveIcon]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="{{closerMenu}}" toggleable on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-menu-button></template>
                 <template is="dom-if" if="[[_hasIcon(icon, iconSrc, label)]]"><mat-icon id="matTabIcon" name="[[icon]]" src="[[iconSrc]]"></mat-icon></template>
                 <div id="matTabLabel">{{label}}</div>
             </div>
@@ -148,7 +148,7 @@ It must be used in conjunction with mat-tabs.
              * @param {Element} firer
              * @param {Object} data
              * @param {Object} memento
-             * @param {boolean} isChanged
+             * @param {boolean} isModified
              * @bubbles
              */
 
@@ -158,7 +158,7 @@ It must be used in conjunction with mat-tabs.
              * @event mat-tab-close
              * @param {Element} firer
              * @param {boolean} isActive
-             * @param {boolean} isChanged
+             * @param {boolean} isModified
              * @bubbles
              */
 
@@ -173,32 +173,19 @@ It must be used in conjunction with mat-tabs.
              */
             _compare: function () {
                 var self = this;
-                self._setChanged(!!self.dataObserver && !!self.mementoObserver && !XP.isEquivalent(self.data, self.memento));
+                self._setModified(!!self.dataObserver && !!self.mementoObserver && !XP.isEquivalent(self.data, self.memento));
                 return self;
             },
 
             /*********************************************************************/
 
+            // OBSERVERS
+            observers: [
+                '_compare(dataObserver, mementoObserver)'
+            ],
+
             // PROPERTIES
             properties: {
-
-                /**
-                 * If set to true, the tab's data and memento are not equivalent.
-                 *
-                 * @attribute changed
-                 * @type boolean
-                 * @default false
-                 * @notifies
-                 * @readonly
-                 */
-                changed: {
-                    notify: true,
-                    observer: '_changedChanged',
-                    readOnly: true,
-                    reflectToAttribute: true,
-                    type: Boolean,
-                    value: false
-                },
 
                 /**
                  * If set to true, the tab can be closed.
@@ -214,7 +201,7 @@ It must be used in conjunction with mat-tabs.
                 },
 
                 /**
-                 * The tab's closer's active icon, used when changed is true.
+                 * The tab's closer's active icon, used when modified is true.
                  *
                  * @attribute closer-active-icon
                  * @type string
@@ -226,7 +213,7 @@ It must be used in conjunction with mat-tabs.
                 },
 
                 /**
-                 * The tab's closer's active icon's src, used when changed is true.
+                 * The tab's closer's active icon's src, used when modified is true.
                  *
                  * @attribute closer-active-icon-src
                  * @type string
@@ -380,6 +367,24 @@ It must be used in conjunction with mat-tabs.
                 },
 
                 /**
+                 * If set to true, the tab's data and memento are not equivalent.
+                 *
+                 * @attribute modified
+                 * @type boolean
+                 * @default false
+                 * @notifies
+                 * @readonly
+                 */
+                modified: {
+                    notify: true,
+                    observer: '_modifiedChanged',
+                    readOnly: true,
+                    reflectToAttribute: true,
+                    type: Boolean,
+                    value: false
+                },
+
+                /**
                  * The tab's name.
                  *
                  * @attribute name
@@ -429,17 +434,12 @@ It must be used in conjunction with mat-tabs.
             /*********************************************************************/
 
             // OBSERVER
-            _changedChanged: function (post) {
-                this.fire('mat-tab-change', {firer: this, data: this.data, memento: this.memento, isChanged: post});
-            },
-
-            // OBSERVER
             _contentChanged: function (post) {
                 if (this.page) { this.page.content = post; }
             },
 
             // OBSERVER
-            _dataChanged: function (post) {
+            _dataChanged: function (post, pre) {
 
                 // Vars
                 var self = this;
@@ -447,15 +447,14 @@ It must be used in conjunction with mat-tabs.
                 // Checking
                 if (arguments.length < 2) { return; }
 
-                // Propagating
-                if (self.page) { self.page.data = post; }
+                // Setting
+                if (self.page && self.page.data === pre) { self.page.data = post; }
+
+                // Disconnecting
+                if (self.dataObserver) { self.dataObserver.disconnect(); }
 
                 // Observing
-                if (self.dataObserver) { self.dataObserver.disconnect(); }
-                if (XP.isObject(post)) { self.dataObserver = new XPObserver(post, self._compare.bind(self), true); }
-
-                // Comparing
-                self._compare();
+                self.dataObserver = XP.isObject(post) ? new XPObserver(post, self._compare.bind(self), true) : null;
             },
 
             // OBSERVER
@@ -467,12 +466,16 @@ It must be used in conjunction with mat-tabs.
                 // Checking
                 if (arguments.length < 2) { return; }
 
-                // Observing
+                // Disconnecting
                 if (self.mementoObserver) { self.mementoObserver.disconnect(); }
-                if (XP.isObject(post)) { self.mementoObserver = new XPObserver(post, self._compare.bind(self), true); }
 
-                // Comparing
-                self._compare();
+                // Observing
+                self.mementoObserver = XP.isObject(post) ? new XPObserver(post, self._compare.bind(self), true) : null;
+            },
+
+            // OBSERVER
+            _modifiedChanged: function (post) {
+                this.fire('mat-tab-change', {firer: this, data: this.data, memento: this.memento, isModified: post});
             },
 
             /*********************************************************************/
@@ -480,7 +483,7 @@ It must be used in conjunction with mat-tabs.
             // HANDLER
             _handleClose: function (event) {
                 var self = this, target = event.detail.firer.findTarget();
-                if (!target) { self.fire('mat-tab-close', {firer: self, isActive: self.active, isChanged: self.changed}); }
+                if (!target) { self.fire('mat-tab-close', {firer: self, isActive: self.active, isModified: self.modified}); }
                 event.stopPropagation();
             },
 
