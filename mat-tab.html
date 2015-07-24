@@ -18,22 +18,22 @@ It must be used in conjunction with mat-tabs.
 @homepage http://expandjs.com/elements/mat-tab
 @demo http://expandjs.com/demo/mat-tabs
 
-@behavior xp-pressed-behavior http://expandjs.com/elements/xp-pressed-behavior
-@behavior xp-referral-behavior http://expandjs.com/elements/xp-referral-behavior
+@behavior xp-pressed-behavior /bower_components/xp-pressed-behavior/xp-pressed-behavior.html
+@behavior xp-referral-behavior /bower_components/xp-referral-behavior/xp-referral-behavior.html
 
 @dependency polymer Polymer/polymer#^1.0.0
-@dependency expandjs ExpandJS/expandjs#0.9.4
-@dependency mat-icon ExpandJS/mat-icon#0.9.4
-@dependency mat-icons ExpandJS/mat-icons#0.9.4
-@dependency mat-ink ExpandJS/mat-ink#0.9.4
-@dependency mat-menu-button ExpandJS/mat-menu-button#0.9.4
-@dependency mat-ripple ExpandJS/mat-ripple#0.9.4
-@dependency xp-observer ExpandJS/xp-observer#0.9.4
-@dependency xp-pressed-behavior ExpandJS/xp-pressed-behavior#0.9.4
-@dependency xp-referral-behavior ExpandJS/xp-referral-behavior#0.9.4
-@dependency xp-slave-state ExpandJS/xp-slave-state#0.9.4
+@dependency expandjs ExpandJS/expandjs#0.9.5
+@dependency mat-icon ExpandJS/mat-icon#0.9.5
+@dependency mat-icons ExpandJS/mat-icons#0.9.5
+@dependency mat-ink ExpandJS/mat-ink#0.9.5
+@dependency mat-menu-button ExpandJS/mat-menu-button#0.9.5
+@dependency mat-ripple ExpandJS/mat-ripple#0.9.5
+@dependency xp-observer ExpandJS/xp-observer#0.9.5
+@dependency xp-pressed-behavior ExpandJS/xp-pressed-behavior#0.9.5
+@dependency xp-referral-behavior ExpandJS/xp-referral-behavior#0.9.5
+@dependency xp-slave-state ExpandJS/xp-slave-state#0.9.5
 
-@devDependency mat-demo ExpandJS/mat-demo#0.9.4
+@devDependency mat-demo ExpandJS/mat-demo#0.9.5
 -->
 
 <link rel="import" href="../polymer/polymer.html">
@@ -57,7 +57,7 @@ It must be used in conjunction with mat-tabs.
             @apply(--mat-font-button);
             display: block;
             height: 48px;
-            line-height: 48px !important; /* override */
+            line-height: 50px !important; /* override */
             opacity: 0.6;
             position: relative;
             text-align: center;
@@ -67,7 +67,8 @@ It must be used in conjunction with mat-tabs.
             opacity: 1;
         }
 
-        :host #matTabWrapper {
+        :host #matTabWrapper,
+        :host #matTabMain {
             height: 100%;
         }
 

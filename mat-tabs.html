@@ -20,17 +20,17 @@ It can be used in conjunction with mat-pages.
 @homepage http://expandjs.com/elements/mat-tabs
 @demo http://expandjs.com/demo/mat-tabs
 
-@behavior xp-selected-behavior http://expandjs.com/elements/xp-selected-behavior
+@behavior xp-selected-behavior /bower_components/xp-selected-behavior/xp-selected-behavior.html
 
 @dependency polymer Polymer/polymer#^1.0.0
-@dependency expandjs ExpandJS/expandjs#0.9.4
+@dependency expandjs ExpandJS/expandjs#0.9.5
 @dependency iron-flex-layout PolymerElements/iron-flex-layout#^1.0.0
-@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.4
-@dependency mat-icons ExpandJS/mat-icons#0.9.4
-@dependency xp-master-state ExpandJS/xp-master-state#0.9.4
-@dependency xp-selected-behavior ExpandJS/xp-selected-behavior#0.9.4
+@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.5
+@dependency mat-icons ExpandJS/mat-icons#0.9.5
+@dependency xp-master-state ExpandJS/xp-master-state#0.9.5
+@dependency xp-selected-behavior ExpandJS/xp-selected-behavior#0.9.5
 
-@devDependency mat-demo ExpandJS/mat-demo#0.9.4
+@devDependency mat-demo ExpandJS/mat-demo#0.9.5
 -->
 
 <link rel="import" href="../polymer/polymer.html">
@@ -364,8 +364,6 @@ It can be used in conjunction with mat-pages.
                 /**
                  * The index of the item to select by default.
                  *
-                 * TODO Temporary webcomponents polyfill's fix for `hostAttributes`.
-                 *
                  * @attribute default-selected
                  * @type number | string
                  * @default 0
@@ -376,8 +374,6 @@ It can be used in conjunction with mat-pages.
 
                 /**
                  * The selector used to recognize selectable items.
-                 *
-                 * TODO Temporary webcomponents polyfill's fix for `hostAttributes`.
                  *
                  * @attribute item-selector
                  * @type string
