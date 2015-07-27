@@ -188,10 +188,10 @@ It can be used in conjunction with mat-pages.
                 var self       = this,
                     item       = self.findItem(index),
                     target     = self.findTarget(),
-                    isSelected = self.isSelected(index);
+                    isSelected = self.isSelected(item, true);
 
                 // Checking
-                if (!item || !item.closable) { return null; }
+                if (item && item.closable) { index = self.findIndex(item, true); } else { return null; }
 
                 // Firing
                 if (self.fire('mat-tabs-close', {firer: self, tab: item, index: index, isActive: item.active, isChanged: item.changed}, {cancelable: true}).defaultPrevented) { return null; }
