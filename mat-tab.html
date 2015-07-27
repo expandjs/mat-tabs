@@ -25,9 +25,9 @@ It must be used in conjunction with mat-tabs.
 @dependency polymer Polymer/polymer#^1.0.0
 @dependency expandjs ExpandJS/expandjs#0.9.5
 @dependency mat-icon ExpandJS/mat-icon#0.9.5
+@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.5
 @dependency mat-icons ExpandJS/mat-icons#0.9.5
 @dependency mat-ink ExpandJS/mat-ink#0.9.5
-@dependency mat-menu-button ExpandJS/mat-menu-button#0.9.5
 @dependency mat-ripple ExpandJS/mat-ripple#0.9.5
 @dependency xp-observer ExpandJS/xp-observer#0.9.5
 @dependency xp-pressed-behavior ExpandJS/xp-pressed-behavior#0.9.5
@@ -40,9 +40,9 @@ It must be used in conjunction with mat-tabs.
 <link rel="import" href="../polymer/polymer.html">
 <link rel="import" href="../expandjs/expandjs.html">
 <link rel="import" href="../mat-icon/mat-icon.html">
+<link rel="import" href="../mat-icon-button/mat-icon-button.html">
 <link rel="import" href="../mat-icons/navigation-icons.html">
 <link rel="import" href="../mat-ink/mat-ink.html">
-<link rel="import" href="../mat-menu-button/mat-menu-button.html">
 <link rel="import" href="../mat-ripple/mat-ripple.html">
 <link rel="import" href="../xp-observer/xp-observer.html">
 <link rel="import" href="../xp-pressed-behavior/xp-pressed-behavior.html">
@@ -121,7 +121,7 @@ It must be used in conjunction with mat-tabs.
         <template is="xp-slave-state" master="{{selector}}" master-tag="mat-tabs"></template>
         <div id="matTabWrapper">
             <div id="matTabMain">
-                <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-menu-button id="matTabCloser" active="{{modified}}" active-icon="[[closerActiveIcon]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="{{closerMenu}}" on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-menu-button></template>
+                <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-icon-button id="matTabCloser" active="{{modified}}" active-icon="[[_computeCloserActiveIcon(closerActiveIcon, closerMenu)]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="[[_computeCloserTarget(closerMenu, modified)]]" toggles-target on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-icon-button></template>
                 <template is="dom-if" if="[[_hasIcon(icon, iconSrc, label)]]"><mat-icon id="matTabIcon" name="[[icon]]" src="[[iconSrc]]"></mat-icon></template>
                 <div id="matTabLabel">{{label}}</div>
             </div>
@@ -414,8 +414,18 @@ It must be used in conjunction with mat-tabs.
             /*********************************************************************/
 
             // COMPUTER
+            _computeCloserActiveIcon: function (closerActiveIcon, closerMenu) {
+                return closerActiveIcon || (closerMenu && 'navigation:arrow-drop-down-circle') || null;
+            },
+
+            // COMPUTER
             _computeCloserIcon: function (closerIcon) {
                 return closerIcon || 'navigation:cancel';
+            },
+
+            // COMPUTER
+            _computeCloserTarget: function (closerMenu, modified) {
+                return (modified && closerMenu) || null;
             },
 
             // COMPUTER
