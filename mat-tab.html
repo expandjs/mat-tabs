@@ -121,7 +121,7 @@ It must be used in conjunction with mat-tabs.
         <template is="xp-slave-state" master="{{selector}}" master-tag="mat-tabs"></template>
         <div id="matTabWrapper">
             <div id="matTabMain">
-                <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-menu-button id="matTabCloser" active="{{modified}}" active-icon="[[closerActiveIcon]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="{{closerMenu}}" toggleable on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-menu-button></template>
+                <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-menu-button id="matTabCloser" active="{{modified}}" active-icon="[[closerActiveIcon]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="{{closerMenu}}" on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-menu-button></template>
                 <template is="dom-if" if="[[_hasIcon(icon, iconSrc, label)]]"><mat-icon id="matTabIcon" name="[[icon]]" src="[[iconSrc]]"></mat-icon></template>
                 <div id="matTabLabel">{{label}}</div>
             </div>
