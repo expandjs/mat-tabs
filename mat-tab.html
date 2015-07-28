@@ -121,7 +121,7 @@ It must be used in conjunction with mat-tabs.
         <template is="xp-slave-state" master="{{selector}}" master-tag="mat-tabs"></template>
         <div id="matTabWrapper">
             <div id="matTabMain">
-                <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-icon-button id="matTabCloser" active="{{modified}}" active-icon="[[_computeCloserActiveIcon(closerActiveIcon, closerMenu)]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="[[_computeCloserTarget(closerMenu, modified)]]" toggles-target on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-icon-button></template>
+                <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-icon-button id="matTabCloser" active="{{modified}}" active-icon="[[_computeCloserActiveIcon(closerActiveIcon, closerTarget)]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="[[_computeCloserTarget(closerTarget, modified)]]" toggles-target on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-icon-button></template>
                 <template is="dom-if" if="[[_hasIcon(icon, iconSrc, label)]]"><mat-icon id="matTabIcon" name="[[icon]]" src="[[iconSrc]]"></mat-icon></template>
                 <div id="matTabLabel">{{label}}</div>
             </div>
@@ -264,13 +264,13 @@ It must be used in conjunction with mat-tabs.
                 },
 
                 /**
-                 * The menu to toggle on closer press.
+                 * The tab's closer's target.
                  *
-                 * @attribute closer-menu
+                 * @attribute closer-target
                  * @type Element | string
                  * @notifies
                  */
-                closerMenu: {
+                closerTarget: {
                     notify: true,
                     value: null
                 },
@@ -414,8 +414,8 @@ It must be used in conjunction with mat-tabs.
             /*********************************************************************/
 
             // COMPUTER
-            _computeCloserActiveIcon: function (closerActiveIcon, closerMenu) {
-                return closerActiveIcon || (closerMenu && 'navigation:arrow-drop-down-circle') || null;
+            _computeCloserActiveIcon: function (closerActiveIcon, closerTarget) {
+                return closerActiveIcon || (closerTarget && 'navigation:arrow-drop-down-circle') || null;
             },
 
             // COMPUTER
@@ -424,8 +424,8 @@ It must be used in conjunction with mat-tabs.
             },
 
             // COMPUTER
-            _computeCloserTarget: function (closerMenu, modified) {
-                return (modified && closerMenu) || null;
+            _computeCloserTarget: function (closerTarget, modified) {
+                return (modified && closerTarget) || null;
             },
 
             // COMPUTER
