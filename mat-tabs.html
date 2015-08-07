@@ -7,11 +7,60 @@ The complete set of contributors may be found at https://expandjs.github.io/CONT
 -->
 
 <!--
-This element is used to display material tabs.
+An element used to display [Material Design tabs](http://www.google.com/design/spec/components/tabs.html).
 
-It must be used in conjunction with mat-tab.
+It must be used in conjunction with [mat-tab](http://expandjs.com/elements/mat-tab).
 
-It can be used in conjunction with mat-pages.
+```html
+<mat-tabs>
+    <mat-tab label="Music"></mat-tab>
+    <mat-tab label="Movies"></mat-tab>
+    <mat-tab label="Books"></mat-tab>
+</mat-tabs>
+```
+
+If you want to be able to scroll the visible tabs you can set `scrollable`.
+
+```html
+<mat-tabs scrollable>
+    <mat-tab label="Music"></mat-tab>
+    <mat-tab label="Movies"></mat-tab>
+    <mat-tab label="Books"></mat-tab>
+    <mat-tab label="Games"></mat-tab>
+</mat-tabs>
+```
+
+It can be used with [mat-pages](http://expandjs.com/elements/mat-pages) by binding the `selected` attributes.
+
+```html
+<mat-tabs selected="{{selected}}">
+    <mat-tab label="Music"></mat-tab>
+    <mat-tab label="Movies"></mat-tab>
+    <mat-tab label="Books"></mat-tab>
+</mat-tabs>
+
+<mat-pages selected="{{selected}}">
+    <mat-page id="music">...</mat-page>
+    <mat-page id="movies">...</mat-page>
+    <mat-page id="books">...</mat-page>
+</mat-pages>
+```
+
+It can also be used to create new tabs and new pages on the fly.
+
+```html
+<mat-tabs id="myTabs" selected="{{selected}}" scrollable></mat-tabs>
+<mat-pages id="myPages" selected="{{selected}}"></mat-pages>
+
+<script>
+    (function () {
+        var tabs  = XP.getElementById('myTabs'),
+            pages = XP.getElementById('myPages');
+
+        tabs.open({label: 'Dynamic page', content: 'app-page'}, true);
+    }());
+</script>
+```
 
 @element mat-tabs
 @description A custom element used to display Material Design tabs
@@ -21,17 +70,18 @@ It can be used in conjunction with mat-pages.
 @repository https://github.com/ExpandJS/mat-tabs
 @demo http://expandjs.com/demo/mat-tabs
 
+@behavior xp-master-behavior /bower_components/xp-master-behavior/xp-master-behavior.html
 @behavior xp-selected-behavior /bower_components/xp-selected-behavior/xp-selected-behavior.html
 
 @dependency polymer Polymer/polymer#^1.0.0
-@dependency expandjs ExpandJS/expandjs#0.9.5
+@dependency expandjs ExpandJS/expandjs#0.9.6
 @dependency iron-flex-layout PolymerElements/iron-flex-layout#^1.0.0
-@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.5
-@dependency mat-icons ExpandJS/mat-icons#0.9.5
-@dependency xp-master-state ExpandJS/xp-master-state#0.9.5
-@dependency xp-selected-behavior ExpandJS/xp-selected-behavior#0.9.5
+@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.6
+@dependency mat-icons ExpandJS/mat-icons#0.9.6
+@dependency xp-master-behavior ExpandJS/xp-master-behavior#0.9.6
+@dependency xp-selected-behavior ExpandJS/xp-selected-behavior#0.9.6
 
-@devDependency mat-demo ExpandJS/mat-demo#0.9.5
+@devDependency mat-demo ExpandJS/mat-demo#0.9.6
 -->
 
 <link rel="import" href="../polymer/polymer.html">
@@ -39,7 +89,7 @@ It can be used in conjunction with mat-pages.
 <link rel="import" href="../iron-flex-layout/iron-flex-layout.html">
 <link rel="import" href="../mat-icon-button/mat-icon-button.html">
 <link rel="import" href="../mat-icons/navigation-icons.html">
-<link rel="import" href="../xp-master-state/xp-master-state.html">
+<link rel="import" href="../xp-master-behavior/xp-master-behavior.html">
 <link rel="import" href="../xp-selected-behavior/xp-selected-behavior.html">
 <link rel="import" href="mat-tab.html">
 
@@ -106,7 +156,7 @@ It can be used in conjunction with mat-pages.
             will-change: transform, width;
         }
 
-        :host([emptyItems]) #matTabsBar {
+        :host([empty-items]) #matTabsBar {
             display: none !important;
         }
 
@@ -114,8 +164,17 @@ It can be used in conjunction with mat-pages.
 
         @media (max-width: 959px) {
 
+            :host([scrollable]) ::content mat-tab {
+                min-width: 72px;
+            }
+
+            :host([scrollable]) ::content mat-tab[closable] {
+                min-width: 96px;
+            }
+
             :host(:not([scrollable])) ::content mat-tab {
                 @apply(--layout-flex);
+                min-width: 0;
             }
 
             :host #matTabsLeft,
@@ -134,7 +193,6 @@ It can be used in conjunction with mat-pages.
     </style>
 
     <template>
-        <template is="xp-master-state" id="xpMasterState" slaves="{{tabs}}" slave-tag="mat-tab"></template>
         <div id="matTabsWrapper">
             <mat-icon-button id="matTabsLeft" showed$="[[moreLeft]]" icon="navigation:chevron-left" on-xp-activate="_handleLeft"></mat-icon-button>
             <div id="matTabsSlider" on-track="_handleTrack">
@@ -155,6 +213,7 @@ It can be used in conjunction with mat-pages.
 
             // BEHAVIORS
             behaviors: [
+                Polymer.XPMasterBehavior,
                 Polymer.XPSelectedBehavior
             ],
 
@@ -300,6 +359,17 @@ It can be used in conjunction with mat-pages.
             },
 
             /**
+             * Returns the slaves map.
+             *
+             * @method _setupSlaves
+             * @returns {Object}
+             * @private
+             */
+            _setupSlaves: function () {
+                return {items: 'mat-tab'};
+            },
+
+            /**
              * Updates the selection bar.
              *
              * @method _updateBar
@@ -384,6 +454,21 @@ It can be used in conjunction with mat-pages.
                     reflectToAttribute: true,
                     type: String,
                     value: 'mat-tab'
+                },
+
+                /**
+                 * The selectable items.
+                 *
+                 * @attribute items
+                 * @type Array
+                 * @notifies
+                 * @readonly
+                 */
+                items: {
+                    notify: true,
+                    readOnly: true,
+                    type: Array,
+                    value: function () { return []; }
                 },
 
                 /**

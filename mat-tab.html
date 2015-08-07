@@ -7,9 +7,82 @@ The complete set of contributors may be found at https://expandjs.github.io/CONT
 -->
 
 <!--
-This element is used to display a material tab.
+An element used to display a single [Material Design tab](http://www.google.com/design/spec/components/tabs.html).
 
-It must be used in conjunction with mat-tabs.
+It must be used in conjunction with [mat-tabs](http://expandjs.com/elements/mat-tabs).
+
+```html
+<mat-tabs>
+    <mat-tab label="Music"></mat-tab>
+    <mat-tab label="Movies"></mat-tab>
+    <mat-tab label="Books"></mat-tab>
+</mat-tabs>
+```
+
+A tab can have an `icon` instead of a `label`.
+
+```html
+<mat-tabs>
+    <mat-tab icon="communication:call"></mat-tab>
+    <mat-tab icon="action:favorite"></mat-tab>
+    <mat-tab icon="maps:person-pin"></mat-tab>
+</mat-tabs>
+```
+
+It can also contain data and be aware if it has changed, by setting `data` and `memento` on the tab.
+The `data` will be automatically checked against the `memento`, which represents a specific state of `data`.
+Whenever they are different, `modified` will be set on the tab.
+
+```html
+<mat-tabs>
+    <mat-tab id="file123" label="My File"></mat-tab>
+    ...
+</mat-tabs>
+
+<script>
+    var tab = XP.getElementById('file123');
+
+    tab.data    = {name: "file123", text: "Hello world!"};
+    tab.memento = {name: "file123", text: "Hello"};
+</script>
+```
+
+Tabs can also be `closable` and combined with [mat-pages](http://expandjs.com/elements/mat-pages)
+to create a generic tab view. The attribute is automatically set on dynamically opened tabs.
+
+```html
+<mat-tabs selected="{{selected}}">
+    <mat-tab icon="communication:call" closable></mat-tab>
+    <mat-tab icon="action:favorite" closable></mat-tab>
+    <mat-tab icon="maps:person-pin" closable></mat-tab>
+</mat-tabs>
+
+<mat-pages selected="{{selected}}">
+    <mat-page content="app-calls"></mat-page>
+    <mat-page content="app-favorites"></mat-page>
+    <mat-page content="app-nearby"></mat-page>
+</mat-pages>
+```
+
+The `closer` can do different actions: instead of closing the tab, it could open a menu with more options.
+
+```html
+<mat-tabs>
+    <mat-tab label="myFile"
+             closer-icon="navigation:arrow-drop-down-circle"
+             closer-target="tabMenu"
+             closable>
+     </mat-tab>
+    ...
+</mat-tabs>
+
+<mat-menu id="tabMenu">
+    <mat-option label="Close"></mat-option>
+    <mat-option label="Save"></mat-option>
+    <mat-option label="Info"></mat-option>
+</mat-menu>
+```
+
 
 @element mat-tab
 @description A custom element used to display a single Material Design tab
@@ -21,20 +94,21 @@ It must be used in conjunction with mat-tabs.
 
 @behavior xp-pressed-behavior /bower_components/xp-pressed-behavior/xp-pressed-behavior.html
 @behavior xp-referral-behavior /bower_components/xp-referral-behavior/xp-referral-behavior.html
+@behavior xp-slave-behavior /bower_components/xp-slave-behavior/xp-slave-behavior.html
 
 @dependency polymer Polymer/polymer#^1.0.0
-@dependency expandjs ExpandJS/expandjs#0.9.5
-@dependency mat-icon ExpandJS/mat-icon#0.9.5
-@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.5
-@dependency mat-icons ExpandJS/mat-icons#0.9.5
-@dependency mat-ink ExpandJS/mat-ink#0.9.5
-@dependency mat-ripple ExpandJS/mat-ripple#0.9.5
-@dependency xp-observer ExpandJS/xp-observer#0.9.5
-@dependency xp-pressed-behavior ExpandJS/xp-pressed-behavior#0.9.5
-@dependency xp-referral-behavior ExpandJS/xp-referral-behavior#0.9.5
-@dependency xp-slave-state ExpandJS/xp-slave-state#0.9.5
+@dependency expandjs ExpandJS/expandjs#0.9.6
+@dependency mat-icon ExpandJS/mat-icon#0.9.6
+@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.6
+@dependency mat-icons ExpandJS/mat-icons#0.9.6
+@dependency mat-ink ExpandJS/mat-ink#0.9.6
+@dependency mat-ripple ExpandJS/mat-ripple#0.9.6
+@dependency xp-observer ExpandJS/xp-observer#0.9.6
+@dependency xp-pressed-behavior ExpandJS/xp-pressed-behavior#0.9.6
+@dependency xp-referral-behavior ExpandJS/xp-referral-behavior#0.9.6
+@dependency xp-slave-behavior ExpandJS/xp-slave-behavior#0.9.6
 
-@devDependency mat-demo ExpandJS/mat-demo#0.9.5
+@devDependency mat-demo ExpandJS/mat-demo#0.9.6
 -->
 
 <link rel="import" href="../polymer/polymer.html">
@@ -47,7 +121,7 @@ It must be used in conjunction with mat-tabs.
 <link rel="import" href="../xp-observer/xp-observer.html">
 <link rel="import" href="../xp-pressed-behavior/xp-pressed-behavior.html">
 <link rel="import" href="../xp-referral-behavior/xp-referral-behavior.html">
-<link rel="import" href="../xp-slave-state/xp-slave-state.html">
+<link rel="import" href="../xp-slave-behavior/xp-slave-behavior.html">
 
 <dom-module id="mat-tab">
 
@@ -59,6 +133,7 @@ It must be used in conjunction with mat-tabs.
             display: block;
             height: 48px;
             line-height: 50px !important; /* override */
+            min-width: 160px;
             opacity: 0.6;
             position: relative;
             text-align: center;
@@ -66,6 +141,10 @@ It must be used in conjunction with mat-tabs.
 
         :host([active]) {
             opacity: 1;
+        }
+
+        :host([closable]) {
+            min-width: 184px;
         }
 
         :host #matTabWrapper,
@@ -79,15 +158,18 @@ It must be used in conjunction with mat-tabs.
         }
 
         :host #matTabCloser {
+            height: 20px;
+            margin: 0;
             position: absolute;
-            right: 0;
-            top: 0;
+            right: 14px;
+            top: 14px;
+            width: 20px;
         }
 
         :host #matTabCloser::shadow #matIconButtonIcon,
         :host #matTabCloser::shadow #matIconButtonActiveIcon {
-            height: 20px;
-            width: 20px;
+            height: 18px;
+            width: 18px;
         }
 
         :host #matTabCloser ~ #matTabLabel {
@@ -118,7 +200,6 @@ It must be used in conjunction with mat-tabs.
     </style>
 
     <template>
-        <template is="xp-slave-state" master="{{selector}}" master-tag="mat-tabs"></template>
         <div id="matTabWrapper">
             <div id="matTabMain">
                 <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-icon-button id="matTabCloser" active="{{modified}}" active-icon="[[_computeCloserActiveIcon(closerActiveIcon, closerTarget)]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="[[_computeCloserTarget(closerTarget, modified)]]" toggles-target on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-icon-button></template>
@@ -138,7 +219,8 @@ It must be used in conjunction with mat-tabs.
             // BEHAVIORS
             behaviors: [
                 Polymer.XPPressedBehavior,
-                Polymer.XPReferralBehavior
+                Polymer.XPReferralBehavior,
+                Polymer.XPSlaveBehavior
             ],
 
             /*********************************************************************/
@@ -177,6 +259,17 @@ It must be used in conjunction with mat-tabs.
                 var self = this;
                 self._setModified(!!self.dataObserver && !!self.mementoObserver && !XP.isEquivalent(self.data, self.memento));
                 return self;
+            },
+
+            /**
+             * Returns the masters map.
+             *
+             * @method _setupMasters
+             * @returns {Object}
+             * @private
+             */
+            _setupMasters: function () {
+                return {selector: 'mat-tabs'};
             },
 
             /*********************************************************************/
@@ -387,18 +480,6 @@ It must be used in conjunction with mat-tabs.
                 },
 
                 /**
-                 * The tab's name.
-                 *
-                 * @attribute name
-                 * @type string
-                 */
-                name: {
-                    reflectToAttribute: true,
-                    type: String,
-                    value: null
-                },
-
-                /**
                  * The page associated with the tab.
                  *
                  * @attribute page
@@ -407,6 +488,20 @@ It must be used in conjunction with mat-tabs.
                  */
                 page: {
                     notify: true,
+                    value: null
+                },
+
+                /**
+                 * The master selector.
+                 *
+                 * @attribute selector
+                 * @type Element
+                 * @notifies
+                 * @readonly
+                 */
+                selector: {
+                    notify: true,
+                    readOnly: true,
                     value: null
                 }
             },
