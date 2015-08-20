@@ -2,6 +2,7 @@
   "name": "mat-tabs",
   "license": "BSD-3-Clause",
   "version": "0.9.6",
+  "main": "mat-tabs.html",
   "description": "A custom element used to display Material Design tabs",
   "homepage": "http://expandjs.com/elements/mat-tabs",
   "authors": [
@@ -16,10 +17,6 @@
     "html5",
     "expandjs",
     "web-components"
-  ],
-  "main": [
-    "mat-tab.html",
-    "mat-tabs.html"
   ],
   "ignore": [
     "**/.*"
