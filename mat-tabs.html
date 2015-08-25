@@ -153,7 +153,7 @@ It can also be used to create new tabs and new pages on the fly.
             transform-origin: 0 0;
             -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
             transition: transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
-            will-change: transform, width;
+            will-change: -webkit-transform, transform, width;
         }
 
         :host([empty-items]) #matTabsBar {
