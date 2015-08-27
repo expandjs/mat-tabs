@@ -125,81 +125,80 @@ The `closer` can do different actions: instead of closing the tab, it could open
 
 <dom-module id="mat-tab">
 
-    <link rel="import" type="css" href="../xp-pressed-behavior/xp-pressed-behavior.css">
+    <template>
 
-    <style>
-        :host {
-            @apply(--mat-font-button);
-            display: block;
-            height: 48px;
-            line-height: 50px !important; /* override */
-            min-width: 160px;
-            opacity: 0.6;
-            position: relative;
-            text-align: center;
-        }
+        <style include="xp-pressed-styles">
+            :host {
+                @apply(--mat-font-button);
+                display: block;
+                height: 48px;
+                line-height: 50px !important; /* override */
+                min-width: 160px;
+                opacity: 0.6;
+                position: relative;
+                text-align: center;
+            }
 
-        :host([active]) {
-            opacity: 1;
-        }
+            :host([active]) {
+                opacity: 1;
+            }
 
-        :host([closable]) {
-            min-width: 184px;
-        }
+            :host([closable]) {
+                min-width: 184px;
+            }
 
-        :host #matTabWrapper,
-        :host #matTabMain {
-            height: 100%;
-        }
-
-        :host #matTabMain {
-            padding: 0 24px;
-            position: relative;
-        }
-
-        :host #matTabCloser {
-            height: 20px;
-            margin: 0;
-            position: absolute;
-            right: 14px;
-            top: 14px;
-            width: 20px;
-        }
-
-        :host #matTabCloser::shadow #matIconButtonIcon,
-        :host #matTabCloser::shadow #matIconButtonActiveIcon {
-            height: 18px;
-            width: 18px;
-        }
-
-        :host #matTabCloser ~ #matTabLabel {
-            margin-right: 24px;
-        }
-
-        :host #matTabIcon {
-            margin: 12px 0;
-        }
-
-        :host #matTabLabel {
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        :host([empty-label]) #matTabLabel {
-            display: none !important;
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 959px) {
+            :host #matTabWrapper,
+            :host #matTabMain {
+                height: 100%;
+            }
 
             :host #matTabMain {
-                padding: 0 12px;
+                padding: 0 24px;
+                position: relative;
             }
-        }
-    </style>
 
-    <template>
+            :host #matTabCloser {
+                height: 20px;
+                margin: 0;
+                position: absolute;
+                right: 14px;
+                top: 14px;
+                width: 20px;
+            }
+
+            :host #matTabCloser::shadow #matIconButtonIcon,
+            :host #matTabCloser::shadow #matIconButtonActiveIcon {
+                height: 18px;
+                width: 18px;
+            }
+
+            :host #matTabCloser ~ #matTabLabel {
+                margin-right: 24px;
+            }
+
+            :host #matTabIcon {
+                margin: 12px 0;
+            }
+
+            :host #matTabLabel {
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+
+            :host([empty-label]) #matTabLabel {
+                display: none !important;
+            }
+
+            /* MOBILE */
+
+            @media (max-width: 959px) {
+
+                :host #matTabMain {
+                    padding: 0 12px;
+                }
+            }
+        </style>
+
         <div id="matTabWrapper">
             <div id="matTabMain">
                 <template is="dom-if" if="[[_isClosable(closable, label)]]"><mat-icon-button id="matTabCloser" active="{{modified}}" active-icon="[[_computeCloserActiveIcon(closerActiveIcon, closerTarget)]]" active-icon-src="[[closerActiveIconSrc]]" data="[[data]]" disabled="[[closerDisabled]]" icon="[[_computeCloserIcon(closerIcon)]]" icon-src="[[closerIconSrc]]" target="[[_computeCloserTarget(closerTarget, modified)]]" toggles-target on-xp-activate="_handleClose" on-down="_handleStop" on-click="_handleStop" on-up="_handleStop"></mat-icon-button></template>
@@ -208,6 +207,7 @@ The `closer` can do different actions: instead of closing the tab, it could open
             </div>
             <mat-ripple context="[[self]]" id="matTabRipple"></mat-ripple>
         </div>
+
     </template>
 
     <script>

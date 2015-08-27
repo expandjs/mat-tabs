@@ -95,104 +95,105 @@ It can also be used to create new tabs and new pages on the fly.
 
 <dom-module id="mat-tabs">
 
-    <style>
-        :host {
-            display: block;
-            overflow: hidden;
-            position: relative;
-            height: 48px;
-            white-space: nowrap;
-        }
+    <template>
 
-        :host #matTabsWrapper {
-            @apply(--layout-horizontal);
-            height: 100%;
-        }
-
-        :host #matTabsLeft {
-            margin: 4px 0 4px 16px;
-        }
-
-        :host #matTabsRight {
-            margin: 4px 16px 4px 0;
-        }
-
-        :host #matTabsLeft:not([showed]),
-        :host #matTabsRight:not([showed]) {
-            opacity: 0 !important;
-            pointer-events: none !important;
-            visibility: hidden !important;
-        }
-
-        :host(:not([scrollable])) #matTabsLeft,
-        :host(:not([scrollable])) #matTabsRight {
-            display: none !important;
-        }
-
-        :host #matTabsSlider {
-            @apply(--layout-flex);
-            height: 100%;
-            overflow: hidden;
-            position: relative;
-        }
-
-        :host #matTabsContainer {
-            @apply(--layout-horizontal);
-            height: 100%;
-            position: absolute;
-        }
-
-        :host #matTabsBar {
-            border-top: 2px solid currentColor;
-            bottom: 0;
-            left: 0;
-            position: absolute;
-            -webkit-transform: scale3d(1, 1, 1) translateX(0px);
-            transform: scale3d(1, 1, 1) translateX(0px);
-            -webkit-transform-origin: 0 0;
-            transform-origin: 0 0;
-            -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
-            transition: transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
-            will-change: -webkit-transform, transform, width;
-        }
-
-        :host([empty-items]) #matTabsBar {
-            display: none !important;
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 959px) {
-
-            :host([scrollable]) ::content mat-tab {
-                min-width: 72px;
+        <style>
+            :host {
+                display: block;
+                overflow: hidden;
+                position: relative;
+                height: 48px;
+                white-space: nowrap;
             }
 
-            :host([scrollable]) ::content mat-tab[closable] {
-                min-width: 96px;
+            :host #matTabsWrapper {
+                @apply(--layout-horizontal);
+                height: 100%;
             }
 
-            :host(:not([scrollable])) ::content mat-tab {
-                @apply(--layout-flex);
-                min-width: 0;
+            :host #matTabsLeft {
+                margin: 4px 0 4px 16px;
             }
 
-            :host #matTabsLeft,
             :host #matTabsRight {
+                margin: 4px 16px 4px 0;
+            }
+
+            :host #matTabsLeft:not([showed]),
+            :host #matTabsRight:not([showed]) {
+                opacity: 0 !important;
+                pointer-events: none !important;
+                visibility: hidden !important;
+            }
+
+            :host(:not([scrollable])) #matTabsLeft,
+            :host(:not([scrollable])) #matTabsRight {
                 display: none !important;
             }
 
-            :host([scrollable]) #matTabsContainer {
-                padding-left: 60px;
-            }
-
-            :host(:not([scrollable])) #matTabsContainer {
+            :host #matTabsSlider {
+                @apply(--layout-flex);
+                height: 100%;
+                overflow: hidden;
                 position: relative;
             }
-        }
-    </style>
 
-    <template>
+            :host #matTabsContainer {
+                @apply(--layout-horizontal);
+                height: 100%;
+                position: absolute;
+            }
+
+            :host #matTabsBar {
+                border-top: 2px solid currentColor;
+                bottom: 0;
+                left: 0;
+                position: absolute;
+                -webkit-transform: scale3d(1, 1, 1) translateX(0px);
+                transform: scale3d(1, 1, 1) translateX(0px);
+                -webkit-transform-origin: 0 0;
+                transform-origin: 0 0;
+                -webkit-transition: -webkit-transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
+                transition: transform 0.5s cubic-bezier(0.55, 0, 0.01, 1), width 0.5s cubic-bezier(0.55, 0, 0.01, 1);
+                will-change: -webkit-transform, transform, width;
+            }
+
+            :host([empty-items]) #matTabsBar {
+                display: none !important;
+            }
+
+            /* MOBILE */
+
+            @media (max-width: 959px) {
+
+                :host([scrollable]) ::content mat-tab {
+                    min-width: 72px;
+                }
+
+                :host([scrollable]) ::content mat-tab[closable] {
+                    min-width: 96px;
+                }
+
+                :host(:not([scrollable])) ::content mat-tab {
+                    @apply(--layout-flex);
+                    min-width: 0;
+                }
+
+                :host #matTabsLeft,
+                :host #matTabsRight {
+                    display: none !important;
+                }
+
+                :host([scrollable]) #matTabsContainer {
+                    padding-left: 60px;
+                }
+
+                :host(:not([scrollable])) #matTabsContainer {
+                    position: relative;
+                }
+            }
+        </style>
+
         <div id="matTabsWrapper">
             <mat-icon-button id="matTabsLeft" showed$="[[moreLeft]]" icon="navigation:chevron-left" on-xp-activate="_handleLeft"></mat-icon-button>
             <div id="matTabsSlider" on-track="_handleTrack">
@@ -203,6 +204,7 @@ It can also be used to create new tabs and new pages on the fly.
             </div>
             <mat-icon-button id="matTabsRight" showed$="[[moreRight]]" icon="navigation:chevron-right" on-xp-activate="_handleRight"></mat-icon-button>
         </div>
+
     </template>
 
     <script>
