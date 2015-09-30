@@ -74,14 +74,14 @@ It can also be used to create new tabs and new pages on the fly.
 @behavior xp-selected-behavior /bower_components/xp-selected-behavior/xp-selected-behavior.html
 
 @dependency polymer Polymer/polymer#^1.1.0
-@dependency expandjs ExpandJS/expandjs#0.9.9
+@dependency expandjs ExpandJS/expandjs#0.9.10
 @dependency iron-flex-layout PolymerElements/iron-flex-layout#^1.0.0
-@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.9
-@dependency mat-icons ExpandJS/mat-icons#0.9.9
-@dependency xp-master-behavior ExpandJS/xp-master-behavior#0.9.9
-@dependency xp-selected-behavior ExpandJS/xp-selected-behavior#0.9.9
+@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.10
+@dependency mat-icons ExpandJS/mat-icons#0.9.10
+@dependency xp-master-behavior ExpandJS/xp-master-behavior#0.9.10
+@dependency xp-selected-behavior ExpandJS/xp-selected-behavior#0.9.10
 
-@devDependency mat-demo ExpandJS/mat-demo#0.9.9
+@devDependency mat-demo ExpandJS/mat-demo#0.9.10
 -->
 
 <link rel="import" href="../polymer/polymer.html">
@@ -257,11 +257,11 @@ It can also be used to create new tabs and new pages on the fly.
                 // Firing
                 if (self.fire('mat-tabs-close', {firer: self, tab: item, index: index, isActive: item.active, isChanged: item.changed}, {cancelable: true}).defaultPrevented) { return null; }
 
-                // Selecting
-                if (isSelected && self.items.length > 1) { self[XP.isLast(item, self.items) ? 'selectPrevious' : 'selectNext'](); }
-
                 // Propagating
                 if (target && target.close) { target.close(index); }
+
+                // Selecting
+                if (isSelected && self.items.length > 1) { self[XP.isLast(item, self.items) ? 'selectPrevious' : 'selectNext'](); }
 
                 // Removing
                 return XP.removeChild(Polymer.dom(Polymer.dom(item).parentNode), item);
@@ -588,12 +588,11 @@ It can also be used to create new tabs and new pages on the fly.
                 if (event.button) { return; }
 
                 // Vars
-                var self   = this,
-                    target = event.target,
-                    item   = self.findItem(target) || self.findItem(XP.findParentElement(Polymer.dom(target), self.itemSelector, self));
+                var self = this,
+                    item = self.findItem(event.target) || self.findItem(XP.findParentElement(Polymer.dom(event.target), self.itemSelector, self));
 
                 // Switching
-                if (item && self[self.isSelected(item, true) ? 'isUnselectable' : 'isSelectable'](item, true)) { self.switch(item, false, true); }
+                if (item) { self.select(item, true); }
             },
 
             // HANDLER

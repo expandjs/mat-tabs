@@ -97,18 +97,18 @@ The `closer` can do different actions: instead of closing the tab, it could open
 @behavior xp-slave-behavior /bower_components/xp-slave-behavior/xp-slave-behavior.html
 
 @dependency polymer Polymer/polymer#^1.0.0
-@dependency expandjs ExpandJS/expandjs#0.9.9
-@dependency mat-icon ExpandJS/mat-icon#0.9.9
-@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.9
-@dependency mat-icons ExpandJS/mat-icons#0.9.9
-@dependency mat-ink ExpandJS/mat-ink#0.9.9
-@dependency mat-ripple ExpandJS/mat-ripple#0.9.9
-@dependency xp-observer ExpandJS/xp-observer#0.9.9
-@dependency xp-pressed-behavior ExpandJS/xp-pressed-behavior#0.9.9
-@dependency xp-referral-behavior ExpandJS/xp-referral-behavior#0.9.9
-@dependency xp-slave-behavior ExpandJS/xp-slave-behavior#0.9.9
+@dependency expandjs ExpandJS/expandjs#0.9.10
+@dependency mat-icon ExpandJS/mat-icon#0.9.10
+@dependency mat-icon-button ExpandJS/mat-icon-button#0.9.10
+@dependency mat-icons ExpandJS/mat-icons#0.9.10
+@dependency mat-ink ExpandJS/mat-ink#0.9.10
+@dependency mat-ripple ExpandJS/mat-ripple#0.9.10
+@dependency xp-observer ExpandJS/xp-observer#0.9.10
+@dependency xp-pressed-behavior ExpandJS/xp-pressed-behavior#0.9.10
+@dependency xp-referral-behavior ExpandJS/xp-referral-behavior#0.9.10
+@dependency xp-slave-behavior ExpandJS/xp-slave-behavior#0.9.10
 
-@devDependency mat-demo ExpandJS/mat-demo#0.9.9
+@devDependency mat-demo ExpandJS/mat-demo#0.9.10
 -->
 
 <link rel="import" href="../polymer/polymer.html">
@@ -160,12 +160,12 @@ The `closer` can do different actions: instead of closing the tab, it could open
             }
 
             :host #matTabCloser {
-                height: 20px;
+                height: 16px;
                 margin: 0;
                 position: absolute;
-                right: 14px;
-                top: 14px;
-                width: 20px;
+                right: 16px;
+                top: 16px;
+                width: 16px;
             }
 
             :host #matTabCloser::shadow #matIconButtonIcon,
@@ -367,6 +367,7 @@ The `closer` can do different actions: instead of closing the tab, it could open
                  */
                 closerTarget: {
                     notify: true,
+                    type: Object,
                     value: null
                 },
 
@@ -403,7 +404,7 @@ The `closer` can do different actions: instead of closing the tab, it could open
                  *
                  * @attribute empty
                  * @type boolean
-                 * @default false
+                 * @default true
                  * @notifies
                  * @readonly
                  */
@@ -411,7 +412,8 @@ The `closer` can do different actions: instead of closing the tab, it could open
                     computed: '_computeEmpty(icon, iconSrc, label)',
                     notify: true,
                     reflectToAttribute: true,
-                    type: Boolean
+                    type: Boolean,
+                    value: true
                 },
 
                 /**
@@ -490,6 +492,7 @@ The `closer` can do different actions: instead of closing the tab, it could open
                  */
                 page: {
                     notify: true,
+                    type: Object,
                     value: null
                 },
 
@@ -504,6 +507,7 @@ The `closer` can do different actions: instead of closing the tab, it could open
                 selector: {
                     notify: true,
                     readOnly: true,
+                    type: Object,
                     value: null
                 }
             },
