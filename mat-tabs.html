@@ -197,7 +197,7 @@ It can also be used to create new tabs and new pages on the fly.
         <div id="matTabsWrapper">
             <mat-icon-button id="matTabsLeft" showed$="[[moreLeft]]" icon="navigation:chevron-left" on-xp-activate="_handleLeft"></mat-icon-button>
             <div id="matTabsSlider" on-track="_handleTrack">
-                <div id="matTabsContainer" on-click="_handleTap" on-mat-tab-close="_handleClose">
+                <div id="matTabsContainer" on-mat-tab-close="_handleClose" on-tap="_handleTap">
                     <content id="content"></content>
                     <mat-ink id="matTabsBar"></mat-ink>
                 </div>
