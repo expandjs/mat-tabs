@@ -230,10 +230,24 @@ It can also be used to create new tabs and new pages on the fly.
             /*********************************************************************/
 
             // LISTENER
+            attached: function () {
+
+                // Listening
+                this.listen(window, 'resize', '_resizeHandler');
+            },
+
+            // LISTENER
             created: function () {
 
                 // Classifying
                 this.classList.add('extended');
+            },
+
+            // LISTENER
+            detached: function () {
+
+                // Unlistening
+                this.unlisten(window, 'resize', '_resizeHandler');
             },
 
             // LISTENER
@@ -265,7 +279,14 @@ It can also be used to create new tabs and new pages on the fly.
                 // Styling
                 self.bar.style.transform = self.bar.style.webkitTransform = 'translateX(' + (item ? item.left - wrapper.left : 0) + 'px)';
                 self.bar.style.width     = item ? item.width + 'px' : 0;
-            }
+            },
+
+            // HANDLER
+            _resizeHandler: XP.debounce(function () {
+
+                // Handling
+                this._mutationHandler();
+            })
         });
     </script>
 
