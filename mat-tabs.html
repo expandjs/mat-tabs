@@ -116,11 +116,8 @@ It can also be used to create new tabs and new pages on the fly.
                 bottom: 0;
                 left: 0;
                 position: absolute;
-                -webkit-transform: scale3d(1, 1, 1) translateX(0px);
                 transform: scale3d(1, 1, 1) translateX(0px);
-                -webkit-transform-origin: 0 0;
                 transform-origin: 0 0;
-                -webkit-transition: -webkit-transform 0.4s cubic-bezier(0.55, 0, 0.01, 1);
                 transition: transform 0.4s cubic-bezier(0.55, 0, 0.01, 1);
             }
 
@@ -277,7 +274,7 @@ It can also be used to create new tabs and new pages on the fly.
                     wrapper = self.selection && XP.getBoundings(self.wrapper);
 
                 // Styling
-                self.bar.style.transform = self.bar.style.webkitTransform = 'translateX(' + (item ? item.left - wrapper.left : 0) + 'px)';
+                self.bar.style.transform = 'translateX(' + (item ? item.left - wrapper.left : 0) + 'px)';
                 self.bar.style.width     = item ? item.width + 'px' : 0;
             },
 
